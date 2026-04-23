@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/lib/auth-context';
 import type { Asset } from '@/lib/database.types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,7 +27,6 @@ import {
 } from '@/components/ui/dialog';
 
 export default function AssetsPage() {
-  const { user } = useAuth();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -80,7 +78,7 @@ export default function AssetsPage() {
       try {
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('assets')
-          .upload(`${user?.id}/${Date.now()}-${file.name}`, file);
+          .upload(`uploads/${Date.now()}-${file.name}`, file);
 
         if (uploadError) throw uploadError;
 
@@ -93,7 +91,6 @@ export default function AssetsPage() {
           file_name: file.name,
           file_type: file.type,
           file_size: file.size,
-          uploaded_by: user?.id,
         }] as any);
 
         if (dbError) throw dbError;

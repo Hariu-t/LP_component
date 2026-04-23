@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,7 +15,6 @@ import type { ComponentSchema } from '@/lib/database.types';
 
 export default function NewComponentPage() {
   const router = useRouter();
-  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -57,7 +55,6 @@ export default function NewComponentPage() {
       const { error } = await supabase.from('components').insert({
         ...formData,
         schema_json: schema,
-        created_by: user?.id,
       } as any);
 
       if (error) throw error;

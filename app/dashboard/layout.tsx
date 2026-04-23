@@ -1,18 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   LayoutDashboard,
   Box,
   FileText,
   Image,
-  LogOut,
-  User,
 } from 'lucide-react';
 
 export default function DashboardLayout({
@@ -20,35 +14,6 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
-  const { user, profile, loading, signOut } = useAuth();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
-    }
-  }, [user, loading, router]);
-
-  const handleSignOut = async () => {
-    await signOut();
-    router.push('/login');
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="space-y-4">
-          <Skeleton className="h-12 w-64" />
-          <Skeleton className="h-8 w-48" />
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return null;
-  }
-
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="border-b bg-white">
@@ -86,16 +51,7 @@ export default function DashboardLayout({
           </nav>
 
           <div className="ml-auto flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <User className="h-4 w-4 text-slate-600" />
-              <span className="text-sm text-slate-600">
-                {profile?.full_name || profile?.email}
-              </span>
-            </div>
-            <Button variant="ghost" size="sm" onClick={handleSignOut}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
-            </Button>
+            <span className="text-sm text-slate-600">認証無効モード</span>
           </div>
         </div>
       </div>

@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,7 +13,6 @@ import { Loader as Loader2 } from 'lucide-react';
 
 export default function NewPagePage() {
   const router = useRouter();
-  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
@@ -40,7 +38,6 @@ export default function NewPagePage() {
         .from('pages')
         .insert({
           ...formData,
-          created_by: user?.id,
         } as any)
         .select()
         .single();
