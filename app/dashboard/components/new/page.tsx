@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/auth-context';
 import {
   buildPreviewValues,
   extractPlaceholderNames,
@@ -23,6 +24,7 @@ import type { ComponentSchema } from '@/lib/database.types';
 
 export default function NewComponentPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -72,14 +74,51 @@ export default function NewComponentPage() {
     toast.success('未使用フィールドを削除しました');
   };
 
+  const toJapaneseCreateError = (error: any): string => {
+    const message = String(error?.message || '');
+    const code = String(error?.code || '');
+
+    if (
+      /row-level security|RLS/i.test(message) ||
+      code === '42501'
+    ) {
+      return '保存権限がありません。Supabase のポリシー設定を確認してください';
+    }
+    if (/duplicate|unique|23505/i.test(message) || code === '23505') {
+      return '同じ内容のコンポーネントが既に存在します';
+    }
+    if (/network|fetch|Failed to fetch/i.test(message)) {
+      return '通信エラーが発生しました。ネットワーク接続を確認してください';
+    }
+    if (message.trim()) {
+      return `コンポーネントの作成に失敗しました: ${message}`;
+    }
+    return 'コンポーネントの作成に失敗しました';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.name.trim()) {
+      toast.error('コンポーネント名を入力してください');
+      return;
+    }
+    if (!formData.html_template.trim()) {
+      toast.error('HTMLテンプレートを入力してください');
+      return;
+    }
+    if (!user) {
+      toast.error('ログインが必要です');
+      return;
+    }
+
     setLoading(true);
 
     try {
       const { error } = await supabase.from('components').insert({
         ...formData,
         schema_json: schemaForSave(formData.html_template, schema),
+        created_by: user.id,
       } as any);
 
       if (error) throw error;
@@ -87,7 +126,7 @@ export default function NewComponentPage() {
       toast.success('コンポーネントを作成しました');
       router.push('/dashboard/components');
     } catch (error: any) {
-      toast.error(error.message || 'コンポーネントの作成に失敗しました');
+      toast.error(toJapaneseCreateError(error));
     } finally {
       setLoading(false);
     }
@@ -146,7 +185,6 @@ export default function NewComponentPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="ヒーローセクション"
-                  required
                 />
               </div>
 
@@ -204,7 +242,6 @@ export default function NewComponentPage() {
 </div>'
                   rows={10}
                   className="font-mono text-sm"
-                  required
                 />
                 <p className="text-xs text-slate-500">
                   動的な値には二重波括弧を使います: {'{{'} fieldName {'}}'}

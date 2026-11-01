@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/auth-context';
 import type { Asset, AssetFolder } from '@/lib/database.types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -59,6 +60,7 @@ function sanitizeFileName(name: string): string {
 }
 
 export default function AssetsPage() {
+  const { user } = useAuth();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [folders, setFolders] = useState<AssetFolder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -134,6 +136,11 @@ export default function AssetsPage() {
     const name = newFolderName.trim();
     if (!name) {
       toast.error('フォルダ名を入力してください');
+      return;
+    }
+
+    if (!user) {
+      toast.error('ログインが必要です');
       return;
     }
 
@@ -216,6 +223,11 @@ export default function AssetsPage() {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
+    if (!user) {
+      toast.error('ログインが必要です');
+      return;
+    }
+
     setUploading(true);
 
     let successCount = 0;
@@ -246,6 +258,7 @@ export default function AssetsPage() {
             file_type: file.type || 'application/octet-stream',
             file_size: file.size,
             folder_id: currentFolderId,
+            uploaded_by: user.id,
           },
         ] as any);
 

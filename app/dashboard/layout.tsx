@@ -1,19 +1,55 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
 import {
   LayoutDashboard,
   Box,
   FileText,
   Image,
+  LogOut,
+  Loader as Loader2,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+  const { user, profile, loading, signOut } = useAuth();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace('/login');
+    }
+  }, [loading, user, router]);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast.success('ログアウトしました');
+      router.replace('/login');
+    } catch (error: any) {
+      toast.error(error?.message || 'ログアウトに失敗しました');
+    }
+  };
+
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="h-8 w-8 animate-spin text-slate-600" />
+      </div>
+    );
+  }
+
+  const displayName =
+    profile?.full_name || profile?.email || user.email || 'ユーザー';
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="border-b bg-white">
@@ -50,15 +86,19 @@ export default function DashboardLayout({
             </Link>
           </nav>
 
-          <div className="ml-auto flex items-center space-x-4">
-            <span className="text-sm text-slate-600">認証無効モード</span>
+          <div className="ml-auto flex items-center space-x-3">
+            <span className="text-sm text-slate-600 max-w-[12rem] truncate">
+              {displayName}
+            </span>
+            <Button variant="outline" size="sm" onClick={handleSignOut}>
+              <LogOut className="mr-2 h-4 w-4" />
+              ログアウト
+            </Button>
           </div>
         </div>
       </div>
 
-      <main className="p-6">
-        {children}
-      </main>
+      <main className="p-6">{children}</main>
     </div>
   );
 }

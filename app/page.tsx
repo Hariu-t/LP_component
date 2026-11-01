@@ -2,14 +2,17 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/auth-context';
 import { Loader as Loader2 } from 'lucide-react';
 
 export default function Home() {
   const router = useRouter();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    router.push('/dashboard');
-  }, [router]);
+    if (loading) return;
+    router.replace(user ? '/dashboard' : '/login');
+  }, [loading, user, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">
