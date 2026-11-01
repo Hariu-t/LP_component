@@ -32,8 +32,10 @@ const PLACEHOLDER_RE = /\{\{\s*([a-zA-Z_][\w]*)\s*\}\}/g;
 export function extractPlaceholderNames(html: string): string[] {
   const names: string[] = [];
   const seen = new Set<string>();
+  let match: RegExpExecArray | null;
 
-  for (const match of html.matchAll(PLACEHOLDER_RE)) {
+  PLACEHOLDER_RE.lastIndex = 0;
+  while ((match = PLACEHOLDER_RE.exec(html)) !== null) {
     const name = match[1];
     if (!seen.has(name)) {
       seen.add(name);
