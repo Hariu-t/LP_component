@@ -169,6 +169,7 @@ export interface Database {
           width: number | null
           height: number | null
           uploaded_by: string | null
+          folder_id: string | null
           created_at: string
         }
         Insert: {
@@ -181,6 +182,7 @@ export interface Database {
           width?: number | null
           height?: number | null
           uploaded_by?: string | null
+          folder_id?: string | null
           created_at?: string
         }
         Update: {
@@ -193,6 +195,27 @@ export interface Database {
           width?: number | null
           height?: number | null
           uploaded_by?: string | null
+          folder_id?: string | null
+          created_at?: string
+        }
+      }
+      asset_folders: {
+        Row: {
+          id: string
+          name: string
+          parent_id: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          parent_id?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          parent_id?: string | null
           created_at?: string
         }
       }
@@ -205,6 +228,7 @@ export type Component = Database['public']['Tables']['components']['Row'];
 export type Page = Database['public']['Tables']['pages']['Row'];
 export type PageSection = Database['public']['Tables']['page_sections']['Row'];
 export type Asset = Database['public']['Tables']['assets']['Row'];
+export type AssetFolder = Database['public']['Tables']['asset_folders']['Row'];
 
 export interface ComponentSchema {
   name: string;
