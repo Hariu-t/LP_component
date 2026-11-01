@@ -6,7 +6,7 @@ import type { Asset } from '@/lib/database.types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, Search, Trash2, Copy, Upload } from 'lucide-react';
+import { Search, Trash2, Copy, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   AlertDialog,
@@ -25,6 +25,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+
+function sanitizeFileName(name: string): string {
+  const trimmed = name.trim() || 'file';
+  const dot = trimmed.lastIndexOf('.');
+  const base = dot > 0 ? trimmed.slice(0, dot) : trimmed;
+  const ext = dot > 0 ? trimmed.slice(dot) : '';
+  const safeBase = base
+    .normalize('NFKD')
+    .replace(/[^\w.-]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '') || 'file';
+  const safeExt = ext.replace(/[^\w.]+/g, '').toLowerCase();
+  return `${safeBase}${safeExt}`;
+}
 
 export default function AssetsPage() {
   const [assets, setAssets] = useState<Asset[]>([]);
@@ -74,11 +88,19 @@ export default function AssetsPage() {
 
     setUploading(true);
 
+    let successCount = 0;
+    let failureCount = 0;
+
     for (const file of Array.from(files)) {
       try {
+        const path = `uploads/${Date.now()}-${sanitizeFileName(file.name)}`;
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('assets')
-          .upload(`uploads/${Date.now()}-${file.name}`, file);
+          .upload(path, file, {
+            cacheControl: '3600',
+            upsert: false,
+            contentType: file.type || undefined,
+          });
 
         if (uploadError) throw uploadError;
 
@@ -89,20 +111,31 @@ export default function AssetsPage() {
         const { error: dbError } = await supabase.from('assets').insert([{
           url: urlData.publicUrl,
           file_name: file.name,
-          file_type: file.type,
+          file_type: file.type || 'application/octet-stream',
           file_size: file.size,
         }] as any);
 
         if (dbError) throw dbError;
+        successCount += 1;
       } catch (error: any) {
-        toast.error(`${file.name} のアップロードに失敗しました: ${error.message}`);
+        failureCount += 1;
+        const message = error?.message || String(error);
+        toast.error(`${file.name} のアップロードに失敗しました: ${message}`);
       }
     }
 
     setUploading(false);
-    setUploadOpen(false);
-    loadAssets();
-    toast.success('アセットをアップロードしました');
+    e.target.value = '';
+
+    if (successCount > 0) {
+      setUploadOpen(false);
+      loadAssets();
+      toast.success(
+        failureCount > 0
+          ? `${successCount} 件アップロードしました（${failureCount} 件失敗）`
+          : `${successCount} 件のアセットをアップロードしました`
+      );
+    }
   };
 
   const handleCopyUrl = (url: string) => {
