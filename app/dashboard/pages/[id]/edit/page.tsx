@@ -45,7 +45,7 @@ export default function PageEditorPage() {
       .maybeSingle();
 
     if (pageError || !pageData) {
-      toast.error('Failed to load page');
+      toast.error('ページの読み込みに失敗しました');
       return;
     }
 
@@ -99,10 +99,10 @@ export default function PageEditorPage() {
       .single();
 
     if (error) {
-      toast.error('Failed to add section');
+      toast.error('セクションの追加に失敗しました');
     } else {
       setSections([...sections, data as any]);
-      toast.success('Section added');
+      toast.success('セクションを追加しました');
     }
   };
 
@@ -113,13 +113,13 @@ export default function PageEditorPage() {
       .eq('id', sectionId);
 
     if (error) {
-      toast.error('Failed to remove section');
+      toast.error('セクションの削除に失敗しました');
     } else {
       setSections(sections.filter((s) => s.id !== sectionId));
       if (selectedSection === sectionId) {
         setSelectedSection(null);
       }
-      toast.success('Section removed');
+      toast.success('セクションを削除しました');
     }
   };
 
@@ -130,7 +130,7 @@ export default function PageEditorPage() {
       .eq('id', sectionId);
 
     if (error) {
-      toast.error('Failed to update content');
+      toast.error('コンテンツの更新に失敗しました');
     } else {
       setSections(
         sections.map((s) =>
@@ -165,7 +165,7 @@ export default function PageEditorPage() {
 
   const handleSave = async () => {
     setSaving(true);
-    toast.success('Changes saved');
+    toast.success('変更を保存しました');
     setSaving(false);
   };
 
@@ -179,9 +179,9 @@ export default function PageEditorPage() {
       .eq('id', pageId);
 
     if (error) {
-      toast.error('Failed to publish page');
+      toast.error('ページの公開に失敗しました');
     } else {
-      toast.success('Page published successfully');
+      toast.success('ページを公開しました');
       setPage((prev) => prev ? { ...prev, status: 'published' } : null);
     }
   };
@@ -198,7 +198,7 @@ export default function PageEditorPage() {
         <div className="bg-white rounded-lg shadow-sm border min-h-screen">
           {sections.length === 0 ? (
             <div className="flex items-center justify-center h-64 text-slate-400">
-              Add components from the left panel to build your page
+              左パネルからコンポーネントを追加してページを作成してください
             </div>
           ) : (
             sections.map((section, index) => (
@@ -279,7 +279,7 @@ export default function PageEditorPage() {
     if (!section) {
       return (
         <div className="flex items-center justify-center h-full text-slate-400 text-center p-4">
-          Select a section to edit its properties
+          セクションを選択するとプロパティを編集できます
         </div>
       );
     }
@@ -349,18 +349,18 @@ export default function PageEditorPage() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-slate-500">No editable fields</p>
+          <p className="text-sm text-slate-500">編集可能なフィールドはありません</p>
         )}
       </div>
     );
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return <div className="flex items-center justify-center h-screen">読み込み中...</div>;
   }
 
   if (!page) {
-    return <div className="flex items-center justify-center h-screen">Page not found</div>;
+    return <div className="flex items-center justify-center h-screen">ページが見つかりません</div>;
   }
 
   return (
@@ -370,7 +370,7 @@ export default function PageEditorPage() {
           <Link href="/dashboard/pages">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
+              戻る
             </Button>
           </Link>
           <div>
@@ -407,12 +407,12 @@ export default function PageEditorPage() {
           <Link href={`/dashboard/pages/${pageId}/preview`} target="_blank">
             <Button variant="outline" size="sm">
               <Eye className="h-4 w-4 mr-2" />
-              Preview
+              プレビュー
             </Button>
           </Link>
 
           <Button onClick={handlePublish} size="sm">
-            Publish
+            公開
           </Button>
         </div>
       </div>
@@ -420,10 +420,10 @@ export default function PageEditorPage() {
       <div className="flex-1 flex overflow-hidden">
         <div className="w-80 border-r bg-white flex flex-col">
           <div className="p-4 border-b">
-            <h3 className="font-semibold mb-3">Add Components</h3>
+            <h3 className="font-semibold mb-3">コンポーネントを追加</h3>
             <Select onValueChange={handleAddSection}>
               <SelectTrigger>
-                <SelectValue placeholder="Select a component" />
+                <SelectValue placeholder="コンポーネントを選択" />
               </SelectTrigger>
               <SelectContent>
                 {components.map((component) => (
@@ -438,7 +438,7 @@ export default function PageEditorPage() {
           <ScrollArea className="flex-1 p-4">
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-slate-600 mb-2">
-                Page Sections ({sections.length})
+                ページセクション ({sections.length})
               </h4>
               {sections.map((section, index) => (
                 <div
@@ -471,7 +471,7 @@ export default function PageEditorPage() {
 
         <div className="w-80 border-l bg-white">
           <div className="p-4 border-b">
-            <h3 className="font-semibold">Properties</h3>
+            <h3 className="font-semibold">プロパティ</h3>
           </div>
           <ScrollArea className="h-[calc(100vh-8rem)]">
             {renderPropertyEditor()}

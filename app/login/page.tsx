@@ -17,7 +17,7 @@ export default function LoginPage() {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">LP Builder</CardTitle>
           <CardDescription>
-            認証機能は一時的に無効化中です。Dashboardへ移動中...
+            認証機能は一時的に無効化中です。ダッシュボードへ移動中...
           </CardDescription>
         </CardHeader>
       </Card>

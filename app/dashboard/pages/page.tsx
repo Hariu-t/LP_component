@@ -21,6 +21,12 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
+const statusLabels: Record<string, string> = {
+  draft: '下書き',
+  preview: 'プレビュー',
+  published: '公開中',
+};
+
 export default function PagesListPage() {
   const [pages, setPages] = useState<Page[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +45,7 @@ export default function PagesListPage() {
       .order('created_at', { ascending: false });
 
     if (error) {
-      toast.error('Failed to load pages');
+      toast.error('ページの読み込みに失敗しました');
     } else {
       setPages(data || []);
     }
@@ -53,9 +59,9 @@ export default function PagesListPage() {
       .eq('id', id);
 
     if (error) {
-      toast.error('Failed to delete page');
+      toast.error('ページの削除に失敗しました');
     } else {
-      toast.success('Page deleted');
+      toast.success('ページを削除しました');
       loadPages();
     }
     setDeleteId(null);
@@ -78,15 +84,15 @@ export default function PagesListPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Pages</h1>
+          <h1 className="text-3xl font-bold tracking-tight">ページ</h1>
           <p className="text-slate-600 mt-1">
-            Manage your landing pages and publish them
+            ランディングページを管理・公開します
           </p>
         </div>
         <Link href="/dashboard/pages/new">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
-            New Page
+            新規ページ
           </Button>
         </Link>
       </div>
@@ -95,7 +101,7 @@ export default function PagesListPage() {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
-            placeholder="Search pages..."
+            placeholder="ページを検索..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -121,12 +127,12 @@ export default function PagesListPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <p className="text-slate-600 mb-4">
-              {searchQuery ? 'No pages found' : 'No pages yet'}
+              {searchQuery ? 'ページが見つかりません' : 'ページがまだありません'}
             </p>
             <Link href="/dashboard/pages/new">
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Create First Page
+                最初のページを作成
               </Button>
             </Link>
           </CardContent>
@@ -148,18 +154,18 @@ export default function PagesListPage() {
               <CardContent>
                 <div className="space-y-3">
                   <p className="text-sm text-slate-600 line-clamp-2">
-                    {page.description || 'No description'}
+                    {page.description || '説明なし'}
                   </p>
                   <div className="flex items-center space-x-2">
                     <Badge
                       variant="secondary"
                       className={statusColors[page.status]}
                     >
-                      {page.status}
+                      {statusLabels[page.status] || page.status}
                     </Badge>
                     {page.published_at && (
                       <span className="text-xs text-slate-500">
-                        {new Date(page.published_at).toLocaleDateString()}
+                        {new Date(page.published_at).toLocaleDateString('ja-JP')}
                       </span>
                     )}
                   </div>
@@ -203,19 +209,19 @@ export default function PagesListPage() {
       <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Page</AlertDialogTitle>
+            <AlertDialogTitle>ページを削除</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this page? This action cannot be undone.
-              All sections and content will be permanently removed.
+              このページを削除しますか？この操作は取り消せません。
+              すべてのセクションとコンテンツが完全に削除されます。
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>キャンセル</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deleteId && handleDelete(deleteId)}
               className="bg-red-600 hover:bg-red-700"
             >
-              Delete
+              削除
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

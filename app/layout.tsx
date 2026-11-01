@@ -7,8 +7,8 @@ import { Toaster } from '@/components/ui/sonner';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'LP Builder - Component-Based Landing Page Platform',
-  description: 'Build beautiful landing pages with reusable components',
+  title: 'LP Builder - コンポーネントベースLP制作プラットフォーム',
+  description: '再利用可能なコンポーネントでランディングページを構築',
   openGraph: {
     images: [
       {
@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <body className={inter.className}>
         <AuthProvider>
           {children}

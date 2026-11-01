@@ -62,11 +62,11 @@ export default function PagePreviewPage() {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return <div className="flex items-center justify-center h-screen">読み込み中...</div>;
   }
 
   if (!page) {
-    return <div className="flex items-center justify-center h-screen">Page not found</div>;
+    return <div className="flex items-center justify-center h-screen">ページが見つかりません</div>;
   }
 
   const allStyles = [
@@ -85,12 +85,12 @@ export default function PagePreviewPage() {
             <Link href={`/dashboard/pages/${pageId}/edit`}>
               <Button variant="ghost" size="sm" className="text-white hover:text-white hover:bg-slate-800">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Editor
+                エディタに戻る
               </Button>
             </Link>
             <div>
               <span className="font-semibold">{page.title}</span>
-              <span className="text-slate-400 ml-2 text-sm">Preview Mode</span>
+              <span className="text-slate-400 ml-2 text-sm">プレビューモード</span>
             </div>
           </div>
         </div>
@@ -107,7 +107,7 @@ export default function PagePreviewPage() {
 
           {sections.length === 0 && (
             <div className="flex items-center justify-center h-64 text-slate-400">
-              No content to preview
+              プレビューするコンテンツがありません
             </div>
           )}
         </div>

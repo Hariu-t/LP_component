@@ -46,7 +46,7 @@ export default function AssetsPage() {
       .order('created_at', { ascending: false });
 
     if (error) {
-      toast.error('Failed to load assets');
+      toast.error('アセットの読み込みに失敗しました');
     } else {
       setAssets(data || []);
     }
@@ -60,9 +60,9 @@ export default function AssetsPage() {
       .eq('id', id);
 
     if (error) {
-      toast.error('Failed to delete asset');
+      toast.error('アセットの削除に失敗しました');
     } else {
-      toast.success('Asset deleted');
+      toast.success('アセットを削除しました');
       loadAssets();
     }
     setDeleteId(null);
@@ -95,19 +95,19 @@ export default function AssetsPage() {
 
         if (dbError) throw dbError;
       } catch (error: any) {
-        toast.error(`Failed to upload ${file.name}: ${error.message}`);
+        toast.error(`${file.name} のアップロードに失敗しました: ${error.message}`);
       }
     }
 
     setUploading(false);
     setUploadOpen(false);
     loadAssets();
-    toast.success('Assets uploaded successfully');
+    toast.success('アセットをアップロードしました');
   };
 
   const handleCopyUrl = (url: string) => {
     navigator.clipboard.writeText(url);
-    toast.success('URL copied to clipboard');
+    toast.success('URLをクリップボードにコピーしました');
   };
 
   const filteredAssets = assets.filter((asset) =>
@@ -126,14 +126,14 @@ export default function AssetsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Assets</h1>
+          <h1 className="text-3xl font-bold tracking-tight">アセット</h1>
           <p className="text-slate-600 mt-1">
-            Manage images and media files
+            画像やメディアファイルを管理します
           </p>
         </div>
         <Button onClick={() => setUploadOpen(true)}>
           <Upload className="mr-2 h-4 w-4" />
-          Upload Assets
+          アセットをアップロード
         </Button>
       </div>
 
@@ -141,7 +141,7 @@ export default function AssetsPage() {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
-            placeholder="Search assets..."
+            placeholder="アセットを検索..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -164,11 +164,11 @@ export default function AssetsPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <p className="text-slate-600 mb-4">
-              {searchQuery ? 'No assets found' : 'No assets yet'}
+              {searchQuery ? 'アセットが見つかりません' : 'アセットがまだありません'}
             </p>
             <Button onClick={() => setUploadOpen(true)}>
               <Upload className="mr-2 h-4 w-4" />
-              Upload First Asset
+              最初のアセットをアップロード
             </Button>
           </CardContent>
         </Card>
@@ -195,7 +195,7 @@ export default function AssetsPage() {
                 </p>
                 <div className="flex items-center justify-between text-xs text-slate-500">
                   <span>{formatFileSize(asset.file_size)}</span>
-                  <span>{new Date(asset.created_at).toLocaleDateString()}</span>
+                  <span>{new Date(asset.created_at).toLocaleDateString('ja-JP')}</span>
                 </div>
                 <div className="flex space-x-1 pt-2">
                   <Button
@@ -205,7 +205,7 @@ export default function AssetsPage() {
                     onClick={() => handleCopyUrl(asset.url)}
                   >
                     <Copy className="h-3 w-3 mr-1" />
-                    Copy
+                    コピー
                   </Button>
                   <Button
                     variant="outline"
@@ -224,9 +224,9 @@ export default function AssetsPage() {
       <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Upload Assets</DialogTitle>
+            <DialogTitle>アセットをアップロード</DialogTitle>
             <DialogDescription>
-              Select images or files to upload. Multiple files are supported.
+              アップロードする画像やファイルを選択してください。複数ファイルに対応しています。
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -246,15 +246,15 @@ export default function AssetsPage() {
               >
                 <Upload className="h-12 w-12 text-slate-400 mb-3" />
                 <p className="text-sm font-medium text-slate-700">
-                  Click to select files
+                  クリックしてファイルを選択
                 </p>
                 <p className="text-xs text-slate-500 mt-1">
-                  or drag and drop
+                  またはドラッグ＆ドロップ
                 </p>
               </label>
             </div>
             {uploading && (
-              <p className="text-sm text-center text-slate-600">Uploading...</p>
+              <p className="text-sm text-center text-slate-600">アップロード中...</p>
             )}
           </div>
         </DialogContent>
@@ -263,18 +263,18 @@ export default function AssetsPage() {
       <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Asset</AlertDialogTitle>
+            <AlertDialogTitle>アセットを削除</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this asset? This action cannot be undone.
+              このアセットを削除しますか？この操作は取り消せません。
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>キャンセル</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deleteId && handleDelete(deleteId)}
               className="bg-red-600 hover:bg-red-700"
             >
-              Delete
+              削除
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

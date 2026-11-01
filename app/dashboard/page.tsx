@@ -37,30 +37,30 @@ export default function DashboardPage() {
 
   const statCards = [
     {
-      title: 'Components',
+      title: 'コンポーネント',
       value: stats.components,
-      description: 'Reusable UI components',
+      description: '再利用可能なUI部品',
       icon: Box,
       href: '/dashboard/components',
     },
     {
-      title: 'Pages',
+      title: 'ページ',
       value: stats.pages,
-      description: 'Total landing pages',
+      description: 'ランディングページの合計',
       icon: FileText,
       href: '/dashboard/pages',
     },
     {
-      title: 'Published',
+      title: '公開中',
       value: stats.published,
-      description: 'Live pages',
+      description: '公開済みのページ',
       icon: TrendingUp,
       href: '/dashboard/pages',
     },
     {
-      title: 'Assets',
+      title: 'アセット',
       value: stats.assets,
-      description: 'Images and media',
+      description: '画像・メディア',
       icon: Image,
       href: '/dashboard/assets',
     },
@@ -70,9 +70,9 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">ダッシュボード</h1>
           <p className="text-slate-600 mt-1">
-            Welcome to your LP builder platform
+            LP制作プラットフォームへようこそ
           </p>
         </div>
       </div>
@@ -104,20 +104,20 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Get started with common tasks</CardDescription>
+            <CardTitle>クイックアクション</CardTitle>
+            <CardDescription>よく使う操作から始めましょう</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <Link href="/dashboard/components/new">
               <Button variant="outline" className="w-full justify-start">
                 <Box className="mr-2 h-4 w-4" />
-                Create Component
+                コンポーネントを作成
               </Button>
             </Link>
             <Link href="/dashboard/pages/new">
               <Button variant="outline" className="w-full justify-start">
                 <FileText className="mr-2 h-4 w-4" />
-                Create Page
+                ページを作成
               </Button>
             </Link>
           </CardContent>
@@ -125,14 +125,14 @@ export default function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Getting Started</CardTitle>
-            <CardDescription>Learn how to use the platform</CardDescription>
+            <CardTitle>はじめに</CardTitle>
+            <CardDescription>プラットフォームの使い方</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-slate-600">
-            <p>1. Create reusable components with editable properties</p>
-            <p>2. Build pages by combining components</p>
-            <p>3. Preview and publish your landing pages</p>
-            <p>4. Track component usage across pages</p>
+            <p>1. 編集可能なプロパティ付きの再利用コンポーネントを作成</p>
+            <p>2. コンポーネントを組み合わせてページを構築</p>
+            <p>3. プレビューしてランディングページを公開</p>
+            <p>4. ページ横断でのコンポーネント使用状況を確認</p>
           </CardContent>
         </Card>
       </div>

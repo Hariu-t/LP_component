@@ -21,6 +21,15 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
+const categoryLabels: Record<string, string> = {
+  hero: 'ヒーロー',
+  cta: 'CTA',
+  form: 'フォーム',
+  feature: '機能紹介',
+  testimonial: 'お客様の声',
+  general: '一般',
+};
+
 export default function ComponentsPage() {
   const [components, setComponents] = useState<Component[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +48,7 @@ export default function ComponentsPage() {
       .order('created_at', { ascending: false });
 
     if (error) {
-      toast.error('Failed to load components');
+      toast.error('コンポーネントの読み込みに失敗しました');
     } else {
       setComponents(data || []);
     }
@@ -53,9 +62,9 @@ export default function ComponentsPage() {
       .eq('id', id);
 
     if (error) {
-      toast.error('Failed to delete component');
+      toast.error('コンポーネントの削除に失敗しました');
     } else {
-      toast.success('Component deleted');
+      toast.success('コンポーネントを削除しました');
       loadComponents();
     }
     setDeleteId(null);
@@ -81,15 +90,15 @@ export default function ComponentsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Components</h1>
+          <h1 className="text-3xl font-bold tracking-tight">コンポーネント</h1>
           <p className="text-slate-600 mt-1">
-            Manage reusable UI components for your landing pages
+            ランディングページ用の再利用可能なUI部品を管理します
           </p>
         </div>
         <Link href="/dashboard/components/new">
           <Button>
             <Plus className="mr-2 h-4 w-4" />
-            New Component
+            新規コンポーネント
           </Button>
         </Link>
       </div>
@@ -98,7 +107,7 @@ export default function ComponentsPage() {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
-            placeholder="Search components..."
+            placeholder="コンポーネントを検索..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -124,12 +133,12 @@ export default function ComponentsPage() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <p className="text-slate-600 mb-4">
-              {searchQuery ? 'No components found' : 'No components yet'}
+              {searchQuery ? 'コンポーネントが見つかりません' : 'コンポーネントがまだありません'}
             </p>
             <Link href="/dashboard/components/new">
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Create First Component
+                最初のコンポーネントを作成
               </Button>
             </Link>
           </CardContent>
@@ -143,7 +152,7 @@ export default function ComponentsPage() {
                   <div className="space-y-1 flex-1">
                     <CardTitle className="text-lg">{component.name}</CardTitle>
                     <CardDescription className="line-clamp-2">
-                      {component.description || 'No description'}
+                      {component.description || '説明なし'}
                     </CardDescription>
                   </div>
                 </div>
@@ -154,10 +163,10 @@ export default function ComponentsPage() {
                     variant="secondary"
                     className={categoryColors[component.category] || categoryColors.general}
                   >
-                    {component.category}
+                    {categoryLabels[component.category] || component.category}
                   </Badge>
                   <Badge variant="outline">
-                    Used: {component.usage_count}
+                    使用中: {component.usage_count}
                   </Badge>
                 </div>
               </CardContent>
@@ -188,19 +197,19 @@ export default function ComponentsPage() {
       <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Component</AlertDialogTitle>
+            <AlertDialogTitle>コンポーネントを削除</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this component? This action cannot be undone.
-              The component will be removed from all pages using it.
+              このコンポーネントを削除しますか？この操作は取り消せません。
+              使用中のすべてのページからこのコンポーネントが削除されます。
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>キャンセル</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deleteId && handleDelete(deleteId)}
               className="bg-red-600 hover:bg-red-700"
             >
-              Delete
+              削除
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

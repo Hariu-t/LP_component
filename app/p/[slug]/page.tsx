@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   if (!data) {
     return {
-      title: 'Page Not Found',
+      title: 'ページが見つかりません',
     };
   }
 
@@ -99,7 +99,7 @@ export default async function PublicPage({ params }: { params: { slug: string } 
 
       {sections.length === 0 && (
         <div className="flex items-center justify-center h-screen text-slate-400">
-          This page has no content yet
+          このページにはまだコンテンツがありません
         </div>
       )}
     </>

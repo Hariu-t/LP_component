@@ -44,13 +44,13 @@ export default function NewPagePage() {
 
       if (error) throw error;
 
-      toast.success('Page created successfully');
+      toast.success('ページを作成しました');
       router.push(`/dashboard/pages/${(data as any).id}/edit`);
     } catch (error: any) {
       if (error.code === '23505') {
-        toast.error('A page with this slug already exists');
+        toast.error('このスラッグのページは既に存在します');
       } else {
-        toast.error(error.message || 'Failed to create page');
+        toast.error(error.message || 'ページの作成に失敗しました');
       }
     } finally {
       setLoading(false);
@@ -60,34 +60,34 @@ export default function NewPagePage() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">New Page</h1>
+        <h1 className="text-3xl font-bold tracking-tight">新規ページ</h1>
         <p className="text-slate-600 mt-1">
-          Create a new landing page
+          新しいランディングページを作成します
         </p>
       </div>
 
       <form onSubmit={handleSubmit}>
         <Card>
           <CardHeader>
-            <CardTitle>Page Information</CardTitle>
+            <CardTitle>ページ情報</CardTitle>
             <CardDescription>
-              Basic details for your landing page
+              ランディングページの基本情報
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Page Title *</Label>
+              <Label htmlFor="title">ページタイトル *</Label>
               <Input
                 id="title"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="Product Launch Page"
+                placeholder="新商品ローンチページ"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="slug">URL Slug *</Label>
+              <Label htmlFor="slug">URLスラッグ *</Label>
               <div className="flex items-center">
                 <span className="text-sm text-slate-500 mr-2">/</span>
                 <Input
@@ -99,21 +99,21 @@ export default function NewPagePage() {
                 />
               </div>
               <p className="text-xs text-slate-500">
-                Letters, numbers, and hyphens only
+                英字・数字・ハイフンのみ使用できます
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">説明</Label>
               <Textarea
                 id="description"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="A landing page for our new product launch campaign"
+                placeholder="新商品ローンチキャンペーン用のランディングページ"
                 rows={3}
               />
               <p className="text-xs text-slate-500">
-                This will be used as the meta description for SEO
+                SEO用のメタディスクリプションとして使用されます
               </p>
             </div>
 
@@ -124,11 +124,11 @@ export default function NewPagePage() {
                 onClick={() => router.back()}
                 disabled={loading}
               >
-                Cancel
+                キャンセル
               </Button>
               <Button type="submit" disabled={loading}>
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Create Page
+                ページを作成
               </Button>
             </div>
           </CardContent>

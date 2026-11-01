@@ -27,25 +27,25 @@ export default function DashboardLayout({
             <Link href="/dashboard">
               <Button variant="ghost" size="sm">
                 <LayoutDashboard className="mr-2 h-4 w-4" />
-                Dashboard
+                ダッシュボード
               </Button>
             </Link>
             <Link href="/dashboard/components">
               <Button variant="ghost" size="sm">
                 <Box className="mr-2 h-4 w-4" />
-                Components
+                コンポーネント
               </Button>
             </Link>
             <Link href="/dashboard/pages">
               <Button variant="ghost" size="sm">
                 <FileText className="mr-2 h-4 w-4" />
-                Pages
+                ページ
               </Button>
             </Link>
             <Link href="/dashboard/assets">
               <Button variant="ghost" size="sm">
                 <Image className="mr-2 h-4 w-4" />
-                Assets
+                アセット
               </Button>
             </Link>
           </nav>
