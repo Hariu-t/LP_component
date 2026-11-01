@@ -12,6 +12,7 @@ import {
   Image,
   LogOut,
   Loader as Loader2,
+  UserPlus,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -84,6 +85,14 @@ export default function DashboardLayout({
                 アセット
               </Button>
             </Link>
+            {profile?.role === 'admin' && (
+              <Link href="/dashboard/invites">
+                <Button variant="ghost" size="sm">
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  招待
+                </Button>
+              </Link>
+            )}
           </nav>
 
           <div className="ml-auto flex items-center space-x-3">

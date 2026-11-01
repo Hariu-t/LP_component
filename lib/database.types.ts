@@ -219,6 +219,36 @@ export interface Database {
           created_at?: string
         }
       }
+      invited_users: {
+        Row: {
+          id: string
+          email: string
+          invited_by: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          invited_by?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          invited_by?: string | null
+          created_at?: string
+        }
+      }
+    }
+    Functions: {
+      is_invited_email: {
+        Args: { check_email: string }
+        Returns: boolean
+      }
+      is_admin: {
+        Args: Record<string, never>
+        Returns: boolean
+      }
     }
   }
 }
@@ -229,6 +259,7 @@ export type Page = Database['public']['Tables']['pages']['Row'];
 export type PageSection = Database['public']['Tables']['page_sections']['Row'];
 export type Asset = Database['public']['Tables']['assets']['Row'];
 export type AssetFolder = Database['public']['Tables']['asset_folders']['Row'];
+export type InvitedUser = Database['public']['Tables']['invited_users']['Row'];
 
 export interface ComponentSchema {
   name: string;

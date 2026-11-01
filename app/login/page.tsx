@@ -1,11 +1,9 @@
 'use client';
 
-import { FormEvent, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Card,
   CardContent,
@@ -13,18 +11,22 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { Loader as Loader2 } from 'lucide-react';
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
-  const { user, loading, signIn, signUp } = useAuth();
-  const [mode, setMode] = useState<'login' | 'signup'>('login');
+  const searchParams = useSearchParams();
+  const { user, loading, signInWithGoogle } = useAuth();
   const [submitting, setSubmitting] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
+
+  useEffect(() => {
+    const error = searchParams.get('error');
+    if (error) {
+      toast.error(decodeURIComponent(error));
+      router.replace('/login');
+    }
+  }, [searchParams, router]);
 
   useEffect(() => {
     if (!loading && user) {
@@ -32,57 +34,17 @@ export default function LoginPage() {
     }
   }, [loading, user, router]);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    if (!email.trim() || !password) {
-      toast.error('メールアドレスとパスワードを入力してください');
-      return;
-    }
-    if (mode === 'signup' && !fullName.trim()) {
-      toast.error('お名前を入力してください');
-      return;
-    }
-    if (password.length < 6) {
-      toast.error('パスワードは6文字以上にしてください');
-      return;
-    }
-
+  const handleGoogle = async () => {
     setSubmitting(true);
     try {
-      if (mode === 'login') {
-        await signIn(email.trim(), password);
-        toast.success('ログインしました');
-      } else {
-        await signUp(email.trim(), password, fullName.trim());
-        toast.success('アカウントを作成しました');
-      }
-      router.replace('/dashboard');
+      await signInWithGoogle();
     } catch (error: any) {
-      const message = String(error?.message || '');
-      if (/Invalid login credentials/i.test(message)) {
-        toast.error('メールアドレスまたはパスワードが正しくありません');
-      } else if (/User already registered/i.test(message)) {
-        toast.error('このメールアドレスは既に登録されています');
-      } else if (/確認メール/.test(message)) {
-        toast.message(message);
-      } else {
-        toast.error(message || '認証に失敗しました');
-      }
-    } finally {
+      toast.error(error?.message || 'Google ログインに失敗しました');
       setSubmitting(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-slate-600" />
-      </div>
-    );
-  }
-
-  if (user) {
+  if (loading || user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-slate-600" />
@@ -96,67 +58,35 @@ export default function LoginPage() {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">LP Builder</CardTitle>
           <CardDescription>
-            管理画面にアクセスするにはログインしてください
+            招待された Google アカウントでログインしてください
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs
-            value={mode}
-            onValueChange={(value) => setMode(value as 'login' | 'signup')}
+          <Button
+            type="button"
+            className="w-full"
+            disabled={submitting}
+            onClick={handleGoogle}
           >
-            <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger value="login">ログイン</TabsTrigger>
-              <TabsTrigger value="signup">新規登録</TabsTrigger>
-            </TabsList>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <TabsContent value="signup" className="mt-0 space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="fullName">お名前</Label>
-                  <Input
-                    id="fullName"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="山田 太郎"
-                    autoComplete="name"
-                  />
-                </div>
-              </TabsContent>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">メールアドレス</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  autoComplete="email"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">パスワード</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="6文字以上"
-                  autoComplete={
-                    mode === 'login' ? 'current-password' : 'new-password'
-                  }
-                />
-              </div>
-
-              <Button type="submit" className="w-full" disabled={submitting}>
-                {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {mode === 'login' ? 'ログイン' : 'アカウント作成'}
-              </Button>
-            </form>
-          </Tabs>
+            {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Google でログイン
+          </Button>
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-slate-600" />
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 }
