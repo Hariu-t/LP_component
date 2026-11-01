@@ -37,6 +37,7 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       components: {
         Row: {
@@ -81,6 +82,7 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       pages: {
         Row: {
@@ -125,6 +127,7 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       page_sections: {
         Row: {
@@ -157,6 +160,7 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       assets: {
         Row: {
@@ -198,6 +202,7 @@ export interface Database {
           folder_id?: string | null
           created_at?: string
         }
+        Relationships: []
       }
       asset_folders: {
         Row: {
@@ -218,6 +223,7 @@ export interface Database {
           parent_id?: string | null
           created_at?: string
         }
+        Relationships: []
       }
       invited_users: {
         Row: {
@@ -238,7 +244,19 @@ export interface Database {
           invited_by?: string | null
           created_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: 'invited_users_invited_by_fkey'
+            columns: ['invited_by']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          }
+        ]
       }
+    }
+    Views: {
+      [_ in never]: never
     }
     Functions: {
       is_invited_email: {
@@ -246,9 +264,15 @@ export interface Database {
         Returns: boolean
       }
       is_admin: {
-        Args: Record<string, never>
+        Args: Record<PropertyKey, never>
         Returns: boolean
       }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
     }
   }
 }
